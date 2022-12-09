@@ -5,7 +5,7 @@ import 'package:an_toan_bao_mat_trong_ptpmdd/controllers/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-String ip = "192.168.171.1";
+String ip = "10.1.0.187";
 String baseUrl = "http://$ip:8084";
 
 //đăng nhập
