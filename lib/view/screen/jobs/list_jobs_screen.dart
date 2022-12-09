@@ -39,7 +39,7 @@ class _JobsScreenState extends State<JobsScreen> {
   }
 
   Future<List<Province>> getProvinces() async {
-    List<Province> listProvinces = [Province(code: 0, name: "Tất cảc ")];
+    List<Province> listProvinces = [Province(code: 0, name: "Tất cả")];
     var response2 = await httpGetNo("https://provinces.open-api.vn/api/?depth=1", context);
     if (response2.containsKey("body")) {
       List<dynamic> body = response2['body'];
@@ -50,6 +50,7 @@ class _JobsScreenState extends State<JobsScreen> {
     return listProvinces;
   }
 
+  Province selecteProvince = Province(code: 0, name: 'Tất cả');
   Future<List<Careers>> getNganhNghe() async {
     List<Careers> listCareer = [Careers(id: 0, name: "Tất cả", parentId: 0)];
     var response = await httpGet("/api/career/get", context);
@@ -65,7 +66,9 @@ class _JobsScreenState extends State<JobsScreen> {
     return listCareer;
   }
 
+  Careers selecteCareers = Careers(id: 0, name: 'Tất cả');
   Map<int, String> listSalary = {0: "Tất cả", 1: "<10 triệu", 2: "10-20 triệu", 3: "20-30 triệu", 4: "30-40 triệu", 5: "40-50 triệu", 6: ">50 triệu"};
+  int selectedSalary = 0;
   @override
   void initState() {
     super.initState();
@@ -86,15 +89,36 @@ class _JobsScreenState extends State<JobsScreen> {
               color: colorWhite,
               size: 20,
             )),
+        actions: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  if (widget.statusCheck == false)
+                    widget.statusCheck = true;
+                  else
+                    widget.statusCheck = false;
+                });
+              },
+              icon: const Icon(
+                Icons.filter_alt,
+                size: 35,
+                color: colorWhite,
+              ))
+        ],
         // ignore: prefer_const_constructors
         title: Center(
           child: Text(widget.titlePage, style: appBarTitle),
         ),
-        // actions: [
-
-        // ],
       ),
       body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+                "https://firebasestorage.googleapis.com/v0/b/store-image-a4f19.appspot.com/o/image%2Fbackground%2Fbackground1.png?alt=media"),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -140,7 +164,7 @@ class _JobsScreenState extends State<JobsScreen> {
                                     showSearchBox: true,
                                     onFind: (String? filter) => getProvinces(),
                                     itemAsString: (Province? u) => u!.name,
-                                    // selectedItem: selectedCareer,
+                                    selectedItem: selecteProvince,
                                     dropdownSearchDecoration: const InputDecoration(
                                       contentPadding: EdgeInsets.only(left: 14, bottom: 10),
                                       focusedBorder: OutlineInputBorder(
@@ -152,7 +176,7 @@ class _JobsScreenState extends State<JobsScreen> {
                                       ),
                                     ),
                                     onChanged: (value) {
-                                      // selectedCareer = value!;
+                                      selecteProvince = value!;
                                       // navigatePush(context,
                                       //     secondPage: JobsInfor(
                                       //       job: value,
@@ -191,7 +215,7 @@ class _JobsScreenState extends State<JobsScreen> {
                                     showSearchBox: true,
                                     onFind: (String? filter) => getNganhNghe(),
                                     itemAsString: (Careers? u) => "${u!.name}",
-                                    // selectedItem: selectedCareers,
+                                    selectedItem: selecteCareers,
                                     dropdownSearchDecoration: const InputDecoration(
                                       contentPadding: EdgeInsets.only(left: 14, bottom: 10),
                                       focusedBorder: OutlineInputBorder(
@@ -203,11 +227,9 @@ class _JobsScreenState extends State<JobsScreen> {
                                       ),
                                     ),
                                     onChanged: (value) {
-                                      // selectedCareer = value!;
-                                      // navigatePush(context,
-                                      //     secondPage: JobsInfor(
-                                      //       job: value,
-                                      //     ));
+                                      setState(() {
+                                        selecteCareers = value!;
+                                      });
                                     },
                                   ),
                                 ),
@@ -240,10 +262,10 @@ class _JobsScreenState extends State<JobsScreen> {
                                       dropdownMaxHeight: 250,
                                       items:
                                           listSalary.entries.map((item) => DropdownMenuItem<int>(value: item.key, child: Text(item.value))).toList(),
-                                      // value: selectedSalary,
+                                      value: selectedSalary,
                                       onChanged: (value) {
                                         setState(() {
-                                          // selectedSalary = value as int;
+                                          selectedSalary = value as int;
                                         });
                                       },
                                       buttonHeight: 40,
@@ -258,7 +280,7 @@ class _JobsScreenState extends State<JobsScreen> {
                                         color: colorWhite,
                                       ),
                                       buttonElevation: 0,
-                                      buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                                      buttonPadding: const EdgeInsets.only(left: 0, right: 14),
                                       itemPadding: const EdgeInsets.only(left: 14, right: 14),
                                       dropdownElevation: 5,
                                       focusColor: colorWhite,
@@ -274,7 +296,7 @@ class _JobsScreenState extends State<JobsScreen> {
                             children: [
                               Container(
                                 width: 150,
-                                margin: EdgeInsets.only(right: 15),
+                                margin: const EdgeInsets.only(right: 15),
                                 child: TextButton(
                                   style: TextButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(
@@ -289,14 +311,177 @@ class _JobsScreenState extends State<JobsScreen> {
                                     textStyle: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10.0, letterSpacing: 2.0),
                                   ),
                                   onPressed: () async {
-                                    // await reLoad(addRess.text, selectedCareer.id, selectedSalary, exp.text);
+                                    setState(() {
+                                      listJobsView = [];
+                                      if (selecteProvince.code != 0) {
+                                        if (selecteCareers.id != 0) {
+                                          if (selectedSalary != 0) {
+                                            for (var element in widget.listJobs) {
+                                              int salaryJob = int.parse(element.salary!);
+                                              if (selectedSalary == 1) {
+                                                if (salaryJob < 10000000 &&
+                                                    selecteProvince.code == element.provinceCode &&
+                                                    selecteCareers.id == element.careers.id) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 2 &&
+                                                  selecteProvince.code == element.provinceCode &&
+                                                  selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 10000000 && salaryJob <= 20000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 3 &&
+                                                  selecteProvince.code == element.provinceCode &&
+                                                  selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 20000000 && salaryJob <= 30000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 4 &&
+                                                  selecteProvince.code == element.provinceCode &&
+                                                  selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 30000000 && salaryJob <= 40000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 5 &&
+                                                  selecteProvince.code == element.provinceCode &&
+                                                  selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 40000000 && salaryJob <= 50000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 6 &&
+                                                  selecteProvince.code == element.provinceCode &&
+                                                  selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 50000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            for (var element in widget.listJobs) {
+                                              if (selecteProvince.code == element.provinceCode && selecteCareers.id == element.careers.id) {
+                                                listJobsView.add(element);
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          if (selectedSalary != 0) {
+                                            for (var element in widget.listJobs) {
+                                              int salaryJob = int.parse(element.salary!);
+                                              if (selectedSalary == 1) {
+                                                if (salaryJob < 10000000 && selecteProvince.code == element.provinceCode) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 2 && selecteProvince.code == element.provinceCode) {
+                                                if (salaryJob >= 10000000 && salaryJob <= 20000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 3 && selecteProvince.code == element.provinceCode) {
+                                                if (salaryJob >= 20000000 && salaryJob <= 30000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 4 && selecteProvince.code == element.provinceCode) {
+                                                if (salaryJob >= 30000000 && salaryJob <= 40000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 5 && selecteProvince.code == element.provinceCode) {
+                                                if (salaryJob >= 40000000 && salaryJob <= 50000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 6 && selecteProvince.code == element.provinceCode) {
+                                                if (salaryJob >= 50000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            for (var element in widget.listJobs) {
+                                              if (selecteProvince.code == element.provinceCode) {
+                                                listJobsView.add(element);
+                                              }
+                                            }
+                                          }
+                                        }
+                                      } else {
+                                        if (selecteCareers.id != 0) {
+                                          if (selectedSalary != 0) {
+                                            for (var element in widget.listJobs) {
+                                              int salaryJob = int.parse(element.salary!);
+                                              if (selectedSalary == 1) {
+                                                if (salaryJob < 10000000 && selecteCareers.id == element.careers.id) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 2 && selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 10000000 && salaryJob <= 20000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 3 && selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 20000000 && salaryJob <= 30000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 4 && selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 30000000 && salaryJob <= 40000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 5 && selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 40000000 && salaryJob <= 50000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 6 && selecteCareers.id == element.careers.id) {
+                                                if (salaryJob >= 50000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            for (var element in widget.listJobs) {
+                                              if (selecteCareers.id == element.careers.id) {
+                                                listJobsView.add(element);
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          if (selectedSalary != 0) {
+                                            for (var element in widget.listJobs) {
+                                              int salaryJob = int.parse(element.salary!);
+                                              if (selectedSalary == 1) {
+                                                if (salaryJob < 10000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 2) {
+                                                if (salaryJob >= 10000000 && salaryJob <= 20000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 3) {
+                                                if (salaryJob >= 20000000 && salaryJob <= 30000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 4) {
+                                                if (salaryJob >= 30000000 && salaryJob <= 40000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 5) {
+                                                if (salaryJob >= 40000000 && salaryJob <= 50000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              } else if (selectedSalary == 6) {
+                                                if (salaryJob >= 50000000) {
+                                                  listJobsView.add(element);
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            listJobsView = widget.listJobs;
+                                          }
+                                        }
+                                      }
+                                    });
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         "Lọc",
-                                        style: AppStyles.appTextStyle(size: 16),
+                                        style: AppStyles.appTextStyle(size: 20, weight: FontWeight.w500, color: colorWhite),
                                       ),
                                     ],
                                   ),
@@ -318,20 +503,19 @@ class _JobsScreenState extends State<JobsScreen> {
                                     textStyle: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10.0, letterSpacing: 2.0),
                                   ),
                                   onPressed: () async {
-                                    // setState(() {
-                                    //   listJobsFind = widget.listJobs;
-                                    //   addRess.text = "";
-                                    //   selectedCareer = Career(id: 0, name: "", parentId: 0);
-                                    //   selectedSalary = 0;
-                                    //   exp.text = "";
-                                    // });
+                                    setState(() {
+                                      selecteProvince = Province(code: 0, name: "Tất cả");
+                                      selecteCareers = Careers(id: 0, name: "Tất cả");
+                                      selectedSalary = 0;
+                                      listJobsView = widget.listJobs;
+                                    });
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         "Hủy lọc",
-                                        style: AppStyles.appTextStyle(size: 16),
+                                        style: AppStyles.appTextStyle(size: 20, weight: FontWeight.w500, color: colorWhite),
                                       ),
                                     ],
                                   ),
@@ -343,12 +527,27 @@ class _JobsScreenState extends State<JobsScreen> {
                       ),
                     )
                   : Row(),
-              for (var element in listJobsView)
-                JobItemList(
-                  job: element,
-                  imageBackground: "assets/images/image-background-card-5.jpg",
-                  province: widget.province[element.provinceCode],
-                )
+              (listJobsView.length > 0)
+                  ? Column(
+                      children: [
+                        for (var element in listJobsView)
+                          JobItemList(
+                            job: element,
+                            imageBackground: "assets/images/image-background-card-5.jpg",
+                            province: widget.province[element.provinceCode],
+                          )
+                      ],
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 50),
+                        Text(
+                          "Không có công việc thích hợp",
+                          style: AppStyles.appTextStyle(size: 22, color: maincolor),
+                        ),
+                      ],
+                    )
             ],
           ),
         ),

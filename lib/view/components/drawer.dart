@@ -4,8 +4,8 @@ import 'package:an_toan_bao_mat_trong_ptpmdd/view/common/color.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/provider.dart';
-import '../../model/user.dart';
 import '../screen/login/login.dart';
+import '../screen/messenger/messenger.dart';
 import '../screen/profile/profile.dart';
 
 class DrawerApp extends StatefulWidget {
@@ -96,7 +96,14 @@ class _DrawerAppState extends State<DrawerApp> {
                 Container(
                   margin: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                   child: TextButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      Navigator.push<void>(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) => const Messenger(),
+                        ),
+                      );
+                    },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       // ignore: prefer_const_literals_to_create_immutables

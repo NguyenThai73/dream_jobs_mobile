@@ -4,6 +4,8 @@ import 'package:an_toan_bao_mat_trong_ptpmdd/view/common/color.dart';
 import 'package:an_toan_bao_mat_trong_ptpmdd/view/components/edit_input.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -86,7 +88,19 @@ class _ProfileBodyState extends State<ProfileBody> {
                           (!widget.checkEdit)
                               ? Center(
                                   child: OutlinedButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+                                    if (result != null) {
+                                      String fileName = result.files.first.name;
+                                      String path = result.files.first.path ?? "";
+                                      await FirebaseStorage.instance.ref('image/avatar/$fileName').putFile(File(path));
+                                      setState(() {
+                                        user.user.avatar =
+                                            "https://firebasestorage.googleapis.com/v0/b/store-image-a4f19.appspot.com/o/image%2Favatar%2F$fileName?alt=media";
+                                      });
+                                    }
+                                  },
                                   child: const Text(
                                     "Thay ảnh",
                                     style: textAppStyle,
@@ -355,9 +369,32 @@ class _ProfileBodyState extends State<ProfileBody> {
                                 Expanded(
                                   flex: 5,
                                   child: (!widget.checkEdit)
-                                      ? IconButton(onPressed: () {}, icon: Icon(Icons.upload))
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+                                            if (result != null) {
+                                              String fileName = result.files.first.name;
+                                              String path = result.files.first.path ?? "";
+                                              await FirebaseStorage.instance.ref('image/cv/$fileName').putFile(File(path));
+                                              setState(() {
+                                                user.user.cv =
+                                                    "https://firebasestorage.googleapis.com/v0/b/store-image-a4f19.appspot.com/o/image%2Favatar%2F$fileName?alt=media";
+                                              });
+                                            }
+                                          },
+                                          icon: Icon(Icons.upload))
                                       : (user.user.cv != null)
-                                          ? IconButton(onPressed: () {}, icon: Icon(Icons.download))
+                                          ? Row(
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {},
+                                                    child: Text(
+                                                      "Đã tải CV (Nhấn để tải xuống)",
+                                                      style: AppStyles.appTextStyle(color: colorBlack),
+                                                    )),
+                                              ],
+                                            )
                                           : Text(""),
                                 )
                               ],
@@ -380,6 +417,7 @@ class _ProfileBodyState extends State<ProfileBody> {
                       decoration: BoxDecoration(
                         border: Border.all(color: maincolor, width: 5),
                         borderRadius: BorderRadius.circular(120),
+                        color: maincolor
                       ),
                       child: (user.user.avatar == "" || user.user.avatar == null)
                           ? ClipOval(

@@ -184,7 +184,8 @@ class _HomeBodyState extends State<HomeBody> {
                     )
                   ],
                 ),
-                CarouselSlider(
+                (listJobsFit.length>0)
+                ?CarouselSlider(
                   options: CarouselOptions(
                     height: 220.0,
                     viewportFraction: 0.83,
@@ -222,7 +223,8 @@ class _HomeBodyState extends State<HomeBody> {
                       },
                     );
                   }).toList(),
-                ),
+                )
+                :Text("Không có việc phù hợp",style: AppStyles.appTextStyle(),),
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

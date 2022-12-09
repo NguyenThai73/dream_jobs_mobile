@@ -109,6 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     processing();
                     var requestBody = {"email": _emailController.text, "password": _passwordController.text};
                     var response = await httpPostLogin(requestBody, context);
+                    print(response);
                     if (response.containsKey("body")) {
                       var body = jsonDecode(response['body']);
                       if (body['success']) {

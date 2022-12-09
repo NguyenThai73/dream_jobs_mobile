@@ -41,6 +41,10 @@ dependencies:
   fluttertoast: ^8.0.9
   carousel_slider: ^4.1.1
   dropdown_button2: ^1.9.2
+  firebase_core: ^2.3.0
+  file_picker: ^5.2.2
+  firebase_storage: any
+  flutter_chat_ui: any
 
 dev_dependencies:
   flutter_test:

@@ -30,20 +30,9 @@ class UserLogin {
   String? addRess;
   String? cv;
   String? avatar;
-  String? hobby;
-  String? personality;
-  String? educational;
   String? career;
-  String? wish;
-  String? salary;
-  String? exp;
-  String? recruitments;
-  String? jobNow;
-  String? currentWorkingAddress;
-  String? currentEmploymentCompany;
   int? status;
   int? height;
-  int? weight;
 
   UserLogin({
     this.id,
@@ -57,20 +46,9 @@ class UserLogin {
     this.addRess,
     this.cv,
     this.avatar,
-    this.hobby,
-    this.personality,
-    this.educational,
     this.career,
-    this.wish,
-    this.salary,
-    this.exp,
-    this.recruitments,
-    this.jobNow,
-    this.currentWorkingAddress,
-    this.currentEmploymentCompany,
     this.status,
     this.height,
-    this.weight,
   });
 
   factory UserLogin.fromJson(Map<dynamic, dynamic> json) {
@@ -88,20 +66,9 @@ class UserLogin {
       addRess: json['infor']['addRess'],
       cv: json['infor']['cv'],
       avatar: json['infor']['avatar'],
-      hobby: json['infor']['hobby'],
-      personality: json['infor']['personality'],
-      educational: json['infor']['educational'],
       career: json['infor']['career'],
-      wish: json['infor']['wish'],
-      salary: json['infor']['salary'],
-      exp: json['infor']['exp'],
-      recruitments: json['infor']['recruitments'],
-      jobNow: json['infor']['jobNow'],
-      currentWorkingAddress: json['infor']['currentWorkingAddress'],
-      currentEmploymentCompany: json['infor']['currentEmploymentCompany'],
       status: json['infor']['status'],
       height: json['infor']['height'],
-      weight: json['infor']['weight'],
     );
   }
   Map<String, dynamic> toMap(birthdayFormat) {
