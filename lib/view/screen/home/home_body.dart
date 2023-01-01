@@ -54,7 +54,8 @@ class _HomeBodyState extends State<HomeBody> {
             addRess: element['addRess'] ?? "",
           );
           if (user.user.height == item.careers.id) listJobsFit.add(item);
-          if (9 == item.careers.id || 10 == item.careers.id) listJobsIT.add(item);
+          if (6 == item.careers.id || 7 == item.careers.id)
+            listJobsIT.add(item);
           if (item.id! < 10) listJobsNew.add(item);
           var salary = int.tryParse(item.salary!);
           if (salary! > 15000000) listJobsSalary.add(item);
@@ -67,7 +68,8 @@ class _HomeBodyState extends State<HomeBody> {
 
   Map<int, String> provinces = {};
   getProvinces() async {
-    var response2 = await httpGetNo("https://provinces.open-api.vn/api/?depth=1", context);
+    var response2 =
+        await httpGetNo("https://provinces.open-api.vn/api/?depth=1", context);
     if (response2.containsKey("body")) {
       List<dynamic> body = response2['body'];
       for (var element in body) {
@@ -120,11 +122,13 @@ class _HomeBodyState extends State<HomeBody> {
                         (light)
                             ? Text(
                                 "Trạng thái tìm việc đang bật",
-                                style: AppStyles.appTextStyle(color: maincolor, size: 16),
+                                style: AppStyles.appTextStyle(
+                                    color: maincolor, size: 16),
                               )
                             : Text(
                                 "Trạng thái tìm việc đang tắt",
-                                style: AppStyles.appTextStyle(color: colorBlack, size: 16),
+                                style: AppStyles.appTextStyle(
+                                    color: colorBlack, size: 16),
                               ),
                       ],
                     ),
@@ -184,47 +188,54 @@ class _HomeBodyState extends State<HomeBody> {
                     )
                   ],
                 ),
-                (listJobsFit.length>0)
-                ?CarouselSlider(
-                  options: CarouselOptions(
-                    height: 220.0,
-                    viewportFraction: 0.83,
-                    initialPage: 0,
-                    enableInfiniteScroll: true,
-                    reverse: false,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3),
-                    autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enlargeCenterPage: true,
-                    // onPageChanged: callbackFunction,
-                    scrollDirection: Axis.horizontal,
-                  ),
-                  items: listJobsFit.map((item) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return TextButton(
-                            onPressed: () {
-                              Navigator.push<void>(
-                                context,
-                                MaterialPageRoute<void>(
-                                  builder: (BuildContext context) => JobInfo(
+                (listJobsFit.length > 0)
+                    ? CarouselSlider(
+                        options: CarouselOptions(
+                          height: 220.0,
+                          viewportFraction: 0.83,
+                          initialPage: 0,
+                          enableInfiniteScroll: true,
+                          reverse: false,
+                          autoPlay: true,
+                          autoPlayInterval: const Duration(seconds: 3),
+                          autoPlayAnimationDuration:
+                              const Duration(milliseconds: 800),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enlargeCenterPage: true,
+                          // onPageChanged: callbackFunction,
+                          scrollDirection: Axis.horizontal,
+                        ),
+                        items: listJobsFit.map((item) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return TextButton(
+                                  onPressed: () {
+                                    Navigator.push<void>(
+                                      context,
+                                      MaterialPageRoute<void>(
+                                        builder: (BuildContext context) =>
+                                            JobInfo(
+                                          job: item,
+                                          province:
+                                              provinces[item.provinceCode],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: JobBox(
                                     job: item,
                                     province: provinces[item.provinceCode],
-                                  ),
-                                ),
-                              );
+                                    imageBackground:
+                                        "assets/images/image-background-card-2.jpg",
+                                  ));
                             },
-                            child: JobBox(
-                              job: item,
-                              province: provinces[item.provinceCode],
-                              imageBackground: "assets/images/image-background-card-2.jpg",
-                            ));
-                      },
-                    );
-                  }).toList(),
-                )
-                :Text("Không có việc phù hợp",style: AppStyles.appTextStyle(),),
+                          );
+                        }).toList(),
+                      )
+                    : Text(
+                        "Không có việc phù hợp",
+                        style: AppStyles.appTextStyle(),
+                      ),
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -232,7 +243,8 @@ class _HomeBodyState extends State<HomeBody> {
                     Row(
                       children: [
                         const SizedBox(width: 5),
-                        const Icon(Icons.local_fire_department, color: maincolor, size: 25),
+                        const Icon(Icons.local_fire_department,
+                            color: maincolor, size: 25),
                         const SizedBox(width: 5),
                         Text(
                           "Việc làm hot",
@@ -289,7 +301,8 @@ class _HomeBodyState extends State<HomeBody> {
                             child: JobBox(
                               job: item,
                               province: provinces[item.provinceCode],
-                              imageBackground: "assets/images/image-background-card-1.png",
+                              imageBackground:
+                                  "assets/images/image-background-card-1.png",
                             ));
                       },
                     );
@@ -302,7 +315,8 @@ class _HomeBodyState extends State<HomeBody> {
                     Row(
                       children: [
                         const SizedBox(width: 5),
-                        const Icon(Icons.new_releases, color: maincolor, size: 25),
+                        const Icon(Icons.new_releases,
+                            color: maincolor, size: 25),
                         const SizedBox(width: 5),
                         Text(
                           "Việc làm mới",
@@ -359,7 +373,8 @@ class _HomeBodyState extends State<HomeBody> {
                             child: JobBox(
                               job: item,
                               province: provinces[item.provinceCode],
-                              imageBackground: "assets/images/image-background-card-1.png",
+                              imageBackground:
+                                  "assets/images/image-background-card-1.png",
                             ));
                       },
                     );
@@ -429,7 +444,8 @@ class _HomeBodyState extends State<HomeBody> {
                             child: JobBox(
                               job: item,
                               province: provinces[item.provinceCode],
-                              imageBackground: "assets/images/image-background-card-1.png",
+                              imageBackground:
+                                  "assets/images/image-background-card-1.png",
                             ));
                       },
                     );
@@ -442,7 +458,8 @@ class _HomeBodyState extends State<HomeBody> {
                     Row(
                       children: [
                         const SizedBox(width: 5),
-                        const Icon(Icons.request_quote, color: maincolor, size: 25),
+                        const Icon(Icons.request_quote,
+                            color: maincolor, size: 25),
                         const SizedBox(width: 5),
                         Text(
                           "Việc làm lương cao",
@@ -499,7 +516,8 @@ class _HomeBodyState extends State<HomeBody> {
                             child: JobBox(
                               job: item,
                               province: provinces[item.provinceCode],
-                              imageBackground: "assets/images/image-background-card-1.png",
+                              imageBackground:
+                                  "assets/images/image-background-card-1.png",
                             ));
                       },
                     );
@@ -509,7 +527,8 @@ class _HomeBodyState extends State<HomeBody> {
                   margin: EdgeInsets.only(top: 10, bottom: 15),
                   child: OutlinedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith((states) {
+                      backgroundColor:
+                          MaterialStateProperty.resolveWith((states) {
                         if (states.contains(MaterialState.pressed)) {
                           return Colors.green;
                         }
@@ -531,7 +550,8 @@ class _HomeBodyState extends State<HomeBody> {
                     },
                     child: Text(
                       "Xem tất cả",
-                      style: AppStyles.appTextStyle(size: 20, color: colorWhite),
+                      style:
+                          AppStyles.appTextStyle(size: 20, color: colorWhite),
                     ),
                   ),
                 )

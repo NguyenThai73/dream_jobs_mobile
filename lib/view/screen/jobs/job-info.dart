@@ -303,7 +303,8 @@ class _JobInfoState extends State<JobInfo> {
                                             style: AppStyles.appTextStyle(size: 18, weight: FontWeight.w500),
                                           ),
                                           const SizedBox(height: 5),
-                                          Text(widget.job.addRess ?? "", style: AppStyles.appTextStyle(size: 15)),
+                                          SizedBox(  width: MediaQuery.of(context).size.width * 0.8,
+                                            child: Text(widget.job.addRess ?? "", style: AppStyles.appTextStyle(size: 15))),
                                         ],
                                       ),
                                     ],
@@ -353,7 +354,6 @@ class _JobInfoState extends State<JobInfo> {
                                               child: Text(
                                                 widget.job.employer.addRess ?? "",
                                                 style: AppStyles.appTextStyle(size: 15),
-                                                maxLines: 3,
                                               )),
                                         ],
                                       ),
@@ -423,6 +423,7 @@ class _JobInfoState extends State<JobInfo> {
                         child: TextButton(
                           onPressed: (!user.listRecruitment.containsKey(widget.job.id))
                               ? () async {
+                                if(user.user.cv!=null){
                                   processing();
                                   var requestBody = {"user_id": user.user.id, "job_id": widget.job.id, "status": 0, "apply": 0};
                                   await httpPost("/api/recruitment/post", requestBody, context);
@@ -433,6 +434,13 @@ class _JobInfoState extends State<JobInfo> {
                                   user.changeListRecruitment(mapJobs);
                                   user.changeCountJobs(count);
                                   Navigator.pop(context);
+                                }else{
+                                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Cần up tải CV để ứng tuyển"),
+                          backgroundColor: Colors.blue,
+                        ));
+                                }
+                                 
                                 }
                               : null,
                           child: Text(
@@ -466,7 +474,7 @@ class _JobInfoState extends State<JobInfo> {
                             ],
                           ),
                         ),
-                      ),
+                      ),  
                     ],
                   ),
                 )

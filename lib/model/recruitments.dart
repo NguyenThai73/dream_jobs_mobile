@@ -11,6 +11,7 @@ class Recruitment {
   int? apply;
   String? applyNote;
   String? applyDate;
+  String? des;
   Recruitment({
     this.id,
     this.userId,
@@ -20,6 +21,7 @@ class Recruitment {
     this.apply,
     this.applyNote,
     this.applyDate,
+    this.des,
   });
   factory Recruitment.fromJson(Map<dynamic, dynamic> json) {
     return Recruitment(

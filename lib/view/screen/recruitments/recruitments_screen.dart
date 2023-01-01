@@ -24,7 +24,8 @@ class RecruitmentScreen extends StatefulWidget {
 class _RecruitmentScreenState extends State<RecruitmentScreen> {
   Map<int, String> provinces = {};
   getProvinces() async {
-    var response2 = await httpGetNo("https://provinces.open-api.vn/api/?depth=1", context);
+    var response2 =
+        await httpGetNo("https://provinces.open-api.vn/api/?depth=1", context);
     if (response2.containsKey("body")) {
       List<dynamic> body = response2['body'];
       for (var element in body) {
@@ -63,6 +64,7 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
           apply: element['apply'],
           applyNote: element['applyNote'],
           applyDate: element['applyDate'],
+          des: element['des'],
         );
         listRecruitments[item.job?.id ?? 0] = item;
       }
@@ -77,11 +79,14 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
   List<Recruitment> listRecruitmentTuChoi = []; //Đã từ chối:4
   setupData() async {
     var user = Provider.of<User>(context, listen: false);
-    Map<int, Recruitment> mapRecruitments = await getListRecruitment(user.user.id!);
+    Map<int, Recruitment> mapRecruitments =
+        await getListRecruitment(user.user.id!);
     user.changeListRecruitment(mapRecruitments);
     for (var element in user.listRecruitment.keys) {
-      user.listRecruitment[element]?.job?.employer = await getEmployer(user.listRecruitment[element]?.job?.employer.id ?? 0);
-      user.listRecruitment[element]?.job?.careers = await getCareer(user.listRecruitment[element]?.job?.careers.id ?? 0);
+      user.listRecruitment[element]?.job?.employer = await getEmployer(
+          user.listRecruitment[element]?.job?.employer.id ?? 0);
+      user.listRecruitment[element]?.job?.careers =
+          await getCareer(user.listRecruitment[element]?.job?.careers.id ?? 0);
       if (user.listRecruitment[element]?.status == 0) {
         listRecruitmentChoPhanHoi.add(user.listRecruitment[element]!);
       } else if (user.listRecruitment[element]?.status == 1) {
@@ -125,7 +130,8 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
     var response1 = await httpGet("/api/career/$idCareer", context);
     if (response1.containsKey("body")) {
       var body = jsonDecode(response1['body']);
-      career = Careers(id: body['id'], name: body['name'], parentId: body['parentId']);
+      career = Careers(
+          id: body['id'], name: body['name'], parentId: body['parentId']);
       setState(() {});
     }
     return career;
@@ -156,7 +162,8 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                    padding:
+                        const EdgeInsets.only(left: 10, right: 10, top: 15),
                     child: TabBar(
                       indicatorWeight: 3,
                       isScrollable: true,
@@ -260,8 +267,13 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                           children: [
                             for (var element in listRecruitmentChoPhanHoi)
                               JobItemList(
-                                job: element.job ?? Jobs(name: '', employer: Employer(), careers: Careers()),
-                                imageBackground: "assets/images/image-background-card-5.jpg",
+                                job: element.job ??
+                                    Jobs(
+                                        name: '',
+                                        employer: Employer(),
+                                        careers: Careers()),
+                                imageBackground:
+                                    "assets/images/image-background-card-5.jpg",
                                 province: provinces[element.job?.provinceCode],
                               )
                           ],
@@ -299,11 +311,144 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             for (var element in listRecruitmentChoPV)
-                              JobItemList(
-                                job: element.job ?? Jobs(name: '', employer: Employer(), careers: Careers()),
-                                imageBackground: "assets/images/image-background-card-5.jpg",
-                                province: provinces[element.job?.provinceCode],
-                              )
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 200,
+                                margin: const EdgeInsets.only(
+                                    left: 15, right: 15, top: 15),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          const Color.fromARGB(255, 102, 97, 97)
+                                              .withOpacity(0.5),
+                                      spreadRadius: 0,
+                                      blurRadius: 20,
+                                      offset: const Offset(
+                                          0, 0), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: TextButton(
+                                    onPressed: () {},
+                                    child: Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        // ignore: prefer_const_literals_to_create_immutables
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color:
+                                                  colorBlack.withOpacity(0.1),
+                                              spreadRadius: 1,
+                                              blurRadius: 1,
+                                              blurStyle: BlurStyle.solid),
+                                        ],
+                                        image: const DecorationImage(
+                                          image: AssetImage(
+                                              "assets/images/image-background-card-5.jpg"),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            // FadeInImage.assetNetwork(placeholder: placeholder, image: image),
+                                            children: [
+                                              const SizedBox(width: 10),
+                                              Image.network(
+                                                element.job?.employer.logo! ??
+                                                    "",
+                                                fit: BoxFit.fill,
+                                                width: 50,
+                                                height: 50,
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Flexible(
+                                                child: Text(
+                                                  element.job?.name ?? "",
+                                                  style: AppStyles.appTextStyle(
+                                                      size: 20,
+                                                      color: colorBlack,
+                                                      weight: FontWeight.w600),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            element.job?.employer.name! ?? "",
+                                            style: AppStyles.appTextStyle(
+                                                color: colorBlack, size: 14),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              const SizedBox(width: 15),
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.paid,
+                                                      size: 25,
+                                                      color: maincolor),
+                                                  Text(
+                                                      " ${element.job?.salary}",
+                                                      style: AppStyles
+                                                          .appTextStyle(
+                                                              color: colorBlack,
+                                                              size: 15,
+                                                              weight: FontWeight
+                                                                  .w400))
+                                                ],
+                                              ),
+                                              const SizedBox(width: 15),
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.location_on,
+                                                      size: 25,
+                                                      color: maincolor),
+                                                  Text(
+                                                      " ${provinces[element.job?.provinceCode]}",
+                                                      style: AppStyles
+                                                          .appTextStyle(
+                                                              color: colorBlack,
+                                                              size: 15,
+                                                              weight: FontWeight
+                                                                  .w400))
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                top: 5, bottom: 5),
+                                            child: const Divider(
+                                              thickness: 1,
+                                              color: colorBlack,
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: (element.des != null &&
+                                                    element.des != "")
+                                                ? Text(
+                                                    "Phỏng vấn ngày: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(element.des!))}",
+                                                    style:
+                                                        AppStyles.appTextStyle(
+                                                            color: colorBlack,
+                                                            overFlow:
+                                                                TextOverflow
+                                                                    .ellipsis))
+                                                : const Text(""),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                              ),
                           ],
                         ),
                       ),
@@ -322,15 +467,19 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: 200,
-                                margin: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                margin: const EdgeInsets.only(
+                                    left: 15, right: 15, top: 15),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color.fromARGB(255, 102, 97, 97).withOpacity(0.5),
+                                      color:
+                                          const Color.fromARGB(255, 102, 97, 97)
+                                              .withOpacity(0.5),
                                       spreadRadius: 0,
                                       blurRadius: 20,
-                                      offset: const Offset(0, 0), // changes position of shadow
+                                      offset: const Offset(
+                                          0, 0), // changes position of shadow
                                     ),
                                   ],
                                 ),
@@ -342,15 +491,22 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                         borderRadius: BorderRadius.circular(15),
                                         // ignore: prefer_const_literals_to_create_immutables
                                         boxShadow: [
-                                          BoxShadow(color: colorBlack.withOpacity(0.1), spreadRadius: 1, blurRadius: 1, blurStyle: BlurStyle.solid),
+                                          BoxShadow(
+                                              color:
+                                                  colorBlack.withOpacity(0.1),
+                                              spreadRadius: 1,
+                                              blurRadius: 1,
+                                              blurStyle: BlurStyle.solid),
                                         ],
                                         image: const DecorationImage(
-                                          image: AssetImage("assets/images/image-background-card-5.jpg"),
+                                          image: AssetImage(
+                                              "assets/images/image-background-card-5.jpg"),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           const SizedBox(height: 10),
                                           Row(
@@ -358,7 +514,8 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                             children: [
                                               const SizedBox(width: 10),
                                               Image.network(
-                                                element.job?.employer.logo! ?? "",
+                                                element.job?.employer.logo! ??
+                                                    "",
                                                 fit: BoxFit.fill,
                                                 width: 50,
                                                 height: 50,
@@ -367,8 +524,12 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                               Flexible(
                                                 child: Text(
                                                   element.job?.name ?? "",
-                                                  style: AppStyles.appTextStyle(size: 20, color: colorBlack, weight: FontWeight.w600),
-                                                  overflow: TextOverflow.ellipsis,
+                                                  style: AppStyles.appTextStyle(
+                                                      size: 20,
+                                                      color: colorBlack,
+                                                      weight: FontWeight.w600),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                               const Icon(
@@ -381,7 +542,8 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                           const SizedBox(height: 10),
                                           Text(
                                             element.job?.employer.name! ?? "",
-                                            style: AppStyles.appTextStyle(color: colorBlack, size: 14),
+                                            style: AppStyles.appTextStyle(
+                                                color: colorBlack, size: 14),
                                           ),
                                           const SizedBox(height: 10),
                                           Row(
@@ -389,32 +551,56 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                               const SizedBox(width: 15),
                                               Row(
                                                 children: [
-                                                  const Icon(Icons.paid, size: 25, color: maincolor),
-                                                  Text(" ${element.job?.salary}",
-                                                      style: AppStyles.appTextStyle(color: colorBlack, size: 15, weight: FontWeight.w400))
+                                                  const Icon(Icons.paid,
+                                                      size: 25,
+                                                      color: maincolor),
+                                                  Text(
+                                                      " ${element.job?.salary}",
+                                                      style: AppStyles
+                                                          .appTextStyle(
+                                                              color: colorBlack,
+                                                              size: 15,
+                                                              weight: FontWeight
+                                                                  .w400))
                                                 ],
                                               ),
                                               const SizedBox(width: 15),
                                               Row(
                                                 children: [
-                                                  const Icon(Icons.location_on, size: 25, color: maincolor),
-                                                  Text(" ${provinces[element.job?.provinceCode]}",
-                                                      style: AppStyles.appTextStyle(color: colorBlack, size: 15, weight: FontWeight.w400))
+                                                  const Icon(Icons.location_on,
+                                                      size: 25,
+                                                      color: maincolor),
+                                                  Text(
+                                                      " ${provinces[element.job?.provinceCode]}",
+                                                      style: AppStyles
+                                                          .appTextStyle(
+                                                              color: colorBlack,
+                                                              size: 15,
+                                                              weight: FontWeight
+                                                                  .w400))
                                                 ],
                                               ),
                                             ],
                                           ),
                                           Container(
-                                            margin: const EdgeInsets.only(top: 5, bottom: 5),
+                                            margin: const EdgeInsets.only(
+                                                top: 5, bottom: 5),
                                             child: const Divider(
                                               thickness: 1,
                                               color: colorBlack,
                                             ),
                                           ),
                                           Flexible(
-                                            child: (element.applyDate != null && element.applyDate != "")
-                                                ? Text("Trúng tuyển ngày ${DateFormat('dd-MM-yyyy').format(DateTime.parse(element.applyDate!))}",
-                                                    style: AppStyles.appTextStyle(color: colorBlack, overFlow: TextOverflow.ellipsis))
+                                            child: (element.applyDate != null &&
+                                                    element.applyDate != "")
+                                                ? Text(
+                                                    "Trúng tuyển ngày ${DateFormat('dd-MM-yyyy').format(DateTime.parse(element.applyDate!))}",
+                                                    style:
+                                                        AppStyles.appTextStyle(
+                                                            color: colorBlack,
+                                                            overFlow:
+                                                                TextOverflow
+                                                                    .ellipsis))
                                                 : const Text(""),
                                           ),
                                         ],
@@ -425,15 +611,19 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: 200,
-                                margin: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                margin: const EdgeInsets.only(
+                                    left: 15, right: 15, top: 15),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color.fromARGB(255, 102, 97, 97).withOpacity(0.5),
+                                      color:
+                                          const Color.fromARGB(255, 102, 97, 97)
+                                              .withOpacity(0.5),
                                       spreadRadius: 0,
                                       blurRadius: 20,
-                                      offset: const Offset(0, 0), // changes position of shadow
+                                      offset: const Offset(
+                                          0, 0), // changes position of shadow
                                     ),
                                   ],
                                 ),
@@ -445,15 +635,22 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                         borderRadius: BorderRadius.circular(15),
                                         // ignore: prefer_const_literals_to_create_immutables
                                         boxShadow: [
-                                          BoxShadow(color: colorBlack.withOpacity(0.1), spreadRadius: 1, blurRadius: 1, blurStyle: BlurStyle.solid),
+                                          BoxShadow(
+                                              color:
+                                                  colorBlack.withOpacity(0.1),
+                                              spreadRadius: 1,
+                                              blurRadius: 1,
+                                              blurStyle: BlurStyle.solid),
                                         ],
                                         image: const DecorationImage(
-                                          image: AssetImage("assets/images/image-background-card-5.jpg"),
+                                          image: AssetImage(
+                                              "assets/images/image-background-card-5.jpg"),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           const SizedBox(height: 10),
                                           Row(
@@ -461,7 +658,8 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                             children: [
                                               const SizedBox(width: 10),
                                               Image.network(
-                                                element.job?.employer.logo! ?? "",
+                                                element.job?.employer.logo! ??
+                                                    "",
                                                 fit: BoxFit.fill,
                                                 width: 50,
                                                 height: 50,
@@ -470,8 +668,12 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                               Flexible(
                                                 child: Text(
                                                   element.job?.name ?? "",
-                                                  style: AppStyles.appTextStyle(size: 20, color: colorBlack, weight: FontWeight.w600),
-                                                  overflow: TextOverflow.ellipsis,
+                                                  style: AppStyles.appTextStyle(
+                                                      size: 20,
+                                                      color: colorBlack,
+                                                      weight: FontWeight.w600),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
                                               const Icon(
@@ -484,7 +686,8 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                           const SizedBox(height: 10),
                                           Text(
                                             element.job?.employer.name! ?? "",
-                                            style: AppStyles.appTextStyle(color: colorBlack, size: 14),
+                                            style: AppStyles.appTextStyle(
+                                                color: colorBlack, size: 14),
                                           ),
                                           const SizedBox(height: 10),
                                           Row(
@@ -492,31 +695,52 @@ class _RecruitmentScreenState extends State<RecruitmentScreen> {
                                               const SizedBox(width: 15),
                                               Row(
                                                 children: [
-                                                  const Icon(Icons.paid, size: 25, color: maincolor),
-                                                  Text(" ${element.job?.salary}",
-                                                      style: AppStyles.appTextStyle(color: colorBlack, size: 15, weight: FontWeight.w400))
+                                                  const Icon(Icons.paid,
+                                                      size: 25,
+                                                      color: maincolor),
+                                                  Text(
+                                                      " ${element.job?.salary}",
+                                                      style: AppStyles
+                                                          .appTextStyle(
+                                                              color: colorBlack,
+                                                              size: 15,
+                                                              weight: FontWeight
+                                                                  .w400))
                                                 ],
                                               ),
                                               const SizedBox(width: 15),
                                               Row(
                                                 children: [
-                                                  const Icon(Icons.location_on, size: 25, color: maincolor),
-                                                  Text(" ${provinces[element.job?.provinceCode]}",
-                                                      style: AppStyles.appTextStyle(color: colorBlack, size: 15, weight: FontWeight.w400))
+                                                  const Icon(Icons.location_on,
+                                                      size: 25,
+                                                      color: maincolor),
+                                                  Text(
+                                                      " ${provinces[element.job?.provinceCode]}",
+                                                      style: AppStyles
+                                                          .appTextStyle(
+                                                              color: colorBlack,
+                                                              size: 15,
+                                                              weight: FontWeight
+                                                                  .w400))
                                                 ],
                                               ),
                                             ],
                                           ),
                                           Container(
-                                            margin: const EdgeInsets.only(top: 5, bottom: 5),
+                                            margin: const EdgeInsets.only(
+                                                top: 5, bottom: 5),
                                             child: const Divider(
                                               thickness: 1,
                                               color: colorBlack,
                                             ),
                                           ),
                                           Flexible(
-                                            child: Text("Mong sẽ có cơ hội hợp tác trong tương lai",
-                                                style: AppStyles.appTextStyle(color: colorBlack, overFlow: TextOverflow.ellipsis)),
+                                            child: Text(
+                                                "Mong sẽ có cơ hội hợp tác trong tương lai",
+                                                style: AppStyles.appTextStyle(
+                                                    color: colorBlack,
+                                                    overFlow:
+                                                        TextOverflow.ellipsis)),
                                           ),
                                         ],
                                       ),

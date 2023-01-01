@@ -107,7 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Text('Đăng nhập', style: textButtonStyle),
                   onPressed: () async {
                     processing();
-                    var requestBody = {"email": _emailController.text, "password": _passwordController.text};
+                    var requestBody = {
+                      "email": _emailController.text,
+                      "password": _passwordController.text
+                    };
                     var response = await httpPostLogin(requestBody, context);
                     print(response);
                     if (response.containsKey("body")) {
@@ -153,7 +156,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push<void>(
                           context,
                           MaterialPageRoute<void>(
-                            builder: (BuildContext context) => const SignScreen(),
+                            builder: (BuildContext context) =>
+                                const SignScreen(),
                           ),
                         );
                       },

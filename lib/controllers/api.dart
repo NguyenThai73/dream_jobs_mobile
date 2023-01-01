@@ -5,20 +5,30 @@ import 'package:an_toan_bao_mat_trong_ptpmdd/controllers/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-String ip = "10.1.0.187";
+String ip = "192.168.2.137";
 String baseUrl = "http://$ip:8084";
 
 //đăng nhập
 httpPostLogin(requestBody, context) async {
   Map<String, String> headers = {'content-type': 'application/json'};
   var finalRequestBody = json.encode(requestBody);
-  var response = await http.post(Uri.parse("$baseUrl/api/user/login".toString()), headers: headers, body: finalRequestBody);
-  if (response.statusCode == 200 && response.headers["content-type"] == 'application/json') {
+  var response = await http.post(
+      Uri.parse("$baseUrl/api/user/login".toString()),
+      headers: headers,
+      body: finalRequestBody);
+  if (response.statusCode == 200 &&
+      response.headers["content-type"] == 'application/json') {
     try {
-      return {"headers": response.headers, "body": json.decode(utf8.decode(response.bodyBytes))};
+      return {
+        "headers": response.headers,
+        "body": json.decode(utf8.decode(response.bodyBytes))
+      };
     } on FormatException catch (e) {}
   } else {
-    return {"headers": response.headers, "body": utf8.decode(response.bodyBytes)};
+    return {
+      "headers": response.headers,
+      "body": utf8.decode(response.bodyBytes)
+    };
   }
 }
 
@@ -26,15 +36,23 @@ httpPostLogin(requestBody, context) async {
 httpPostRegister(requestBody, context) async {
   Map<String, String> headers = {'content-type': 'application/json'};
   var finalRequestBody = json.encode(requestBody);
-  var response = await http.post(Uri.parse("$baseUrl/api/user/signup"), headers: headers, body: finalRequestBody);
-  if (response.statusCode == 200 && response.headers["content-type"] == 'application/json') {
+  var response = await http.post(Uri.parse("$baseUrl/api/user/signup"),
+      headers: headers, body: finalRequestBody);
+  if (response.statusCode == 200 &&
+      response.headers["content-type"] == 'application/json') {
     try {
-      return {"headers": response.headers, "body": json.decode(utf8.decode(response.bodyBytes))};
+      return {
+        "headers": response.headers,
+        "body": json.decode(utf8.decode(response.bodyBytes))
+      };
     } on FormatException catch (e) {
       //bypass
     }
   } else {
-    return {"headers": response.headers, "body": utf8.decode(response.bodyBytes)};
+    return {
+      "headers": response.headers,
+      "body": utf8.decode(response.bodyBytes)
+    };
   }
 }
 
@@ -46,24 +64,38 @@ httpGet(url, context) async {
     headers["Authorization"] = "${securityModel.authorization}";
   }
   var response = await http.get(Uri.parse('$baseUrl$url'), headers: headers);
-  if (response.statusCode == 200 && response.headers["content-type"] == 'application/json') {
+  if (response.statusCode == 200 &&
+      response.headers["content-type"] == 'application/json') {
     try {
-      return {"headers": response.headers, "body": json.decode(utf8.decode(response.bodyBytes))};
+      return {
+        "headers": response.headers,
+        "body": json.decode(utf8.decode(response.bodyBytes))
+      };
     } on FormatException catch (e) {}
   } else {
-    return {"headers": response.headers, "body": utf8.decode(response.bodyBytes)};
+    return {
+      "headers": response.headers,
+      "body": utf8.decode(response.bodyBytes)
+    };
   }
 }
 
 httpGetNo(url, context) async {
   Map<String, String> headers = {'content-type': 'application/json'};
   var response = await http.get(Uri.parse('$url'), headers: headers);
-  if (response.statusCode == 200 && response.headers["content-type"] == 'application/json') {
+  if (response.statusCode == 200 &&
+      response.headers["content-type"] == 'application/json') {
     try {
-      return {"headers": response.headers, "body": json.decode(utf8.decode(response.bodyBytes))};
+      return {
+        "headers": response.headers,
+        "body": json.decode(utf8.decode(response.bodyBytes))
+      };
     } on FormatException catch (e) {}
   } else {
-    return {"headers": response.headers, "body": utf8.decode(response.bodyBytes)};
+    return {
+      "headers": response.headers,
+      "body": utf8.decode(response.bodyBytes)
+    };
   }
 }
 
@@ -75,15 +107,23 @@ httpPost(url, requestBody, context) async {
     headers["Authorization"] = "${user.authorization}";
   }
   var finalRequestBody = json.encode(requestBody);
-  var response = await http.post(Uri.parse("$baseUrl$url".toString()), headers: headers, body: finalRequestBody);
-  if (response.statusCode == 200 && response.headers["content-type"] == 'application/json') {
+  var response = await http.post(Uri.parse("$baseUrl$url".toString()),
+      headers: headers, body: finalRequestBody);
+  if (response.statusCode == 200 &&
+      response.headers["content-type"] == 'application/json') {
     try {
-      return {"headers": response.headers, "body": json.decode(utf8.decode(response.bodyBytes))};
+      return {
+        "headers": response.headers,
+        "body": json.decode(utf8.decode(response.bodyBytes))
+      };
     } on FormatException catch (e) {
       //bypass
     }
   } else {
-    return {"headers": response.headers, "body": utf8.decode(response.bodyBytes)};
+    return {
+      "headers": response.headers,
+      "body": utf8.decode(response.bodyBytes)
+    };
   }
 }
 
@@ -120,11 +160,19 @@ httpPut(url, requestBody, context) async {
   Map<String, String> headers = {'content-type': 'application/json'};
   headers["Authorization"] = "${securityModel.authorization}";
   var finalRequestBody = json.encode(requestBody);
-  var response = await http.put(Uri.parse('$baseUrl$url'), headers: headers, body: finalRequestBody);
-  if (response.statusCode == 200 && response.headers["content-type"] == 'application/json') {
+  var response = await http.put(Uri.parse('$baseUrl$url'),
+      headers: headers, body: finalRequestBody);
+  if (response.statusCode == 200 &&
+      response.headers["content-type"] == 'application/json') {
     try {
-      return {"headers": response.headers, "body": json.decode(utf8.decode(response.bodyBytes))};
+      return {
+        "headers": response.headers,
+        "body": json.decode(utf8.decode(response.bodyBytes))
+      };
     } on FormatException catch (e) {}
   } else
-    return {"headers": response.headers, "body": utf8.decode(response.bodyBytes)};
+    return {
+      "headers": response.headers,
+      "body": utf8.decode(response.bodyBytes)
+    };
 }
